@@ -1,0 +1,17 @@
+{
+    "name": "group6/php-oop-labs",
+    "description": "PHP OOP lab for 2FA",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Group6\\PhpOopLabs\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Munyoiks",
+            "email": "167209005+Munyoiks@users.noreply.github.com"
+        }
+    ],
+    "require": {}
+}
