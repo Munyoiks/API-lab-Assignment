@@ -13,5 +13,9 @@
             "email": "167209005+Munyoiks@users.noreply.github.com"
         }
     ],
-    "require": {}
+    "require": {
+        "sonata-project/google-authenticator": "^2.3"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
