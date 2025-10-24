@@ -1,48 +1,48 @@
 <?php
-require 'vendor/autoload.php';
-use Group6\PhpOopLabs\User;
+require_once __DIR__ . '/vendor/autoload.php';
 
-session_start(); // Optional: for access control if needed
+use Group6\PhpOopLabs\Database;
 
-$user = new User();
-$users = $user->getAllUsers();
+$db = new Database();
+$conn = $db->connect(); // This should now return a PDO object
+
+if ($conn === null) {
+    die("Database connection failed: Connection is null");
+}
+
+$stmt = $conn->query("SELECT id, name, email, twofa_secret FROM users ORDER BY id DESC");
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>All Users</title>
+    <title>Registered Users</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container mt-5">
-        <h2>All Users</h2>
-        <?php if (empty($users)): ?>
-            <p>No users found.</p>
-        <?php else: ?>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Created At</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($users as $u): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($u['id']) ?></td>
-                            <td><?= htmlspecialchars($u['name']) ?></td>
-                            <td><?= htmlspecialchars($u['email']) ?></td>
-                            <td><?= htmlspecialchars($u['created_at']) ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        <?php endif; ?>
-        <a href="register.php" class="btn btn-primary">Add New User</a>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<div class="container mt-5">
+    <h2>Registered Users</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>2FA Secret</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($users as $user): ?>
+                <tr>
+                    <td><?= htmlspecialchars($user['id']) ?></td>
+                    <td><?= htmlspecialchars($user['name']) ?></td>
+                    <td><?= htmlspecialchars($user['email']) ?></td>
+                    <td><?= htmlspecialchars($user['twofa_secret'] ?? 'Not Set') ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

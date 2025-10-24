@@ -14,8 +14,9 @@
         }
     ],
     "require": {
-        "sonata-project/google-authenticator": "^2.3"
+        "php": ">=7.2",
+        "phpgangsta/googleauthenticator": "dev-master"
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+"prefer-stable": true
 }
