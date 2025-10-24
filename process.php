@@ -1,20 +1,29 @@
 <?php
-// process.php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name']);
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
+require __DIR__ . '/vendor/autoload.php';
 
-    $errors = [];
-    if (empty($name)) $errors[] = 'Name is required.';
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Invalid email.';
-    if (strlen($password) < 8) $errors[] = 'Password too short.';
+use Sonata\GoogleAuthenticator\GoogleAuthenticator;
+use Sonata\GoogleAuthenticator\GoogleQrUrl;
 
-    if (!empty($errors)) {
-        // Redirect back with errors (use sessions or query params)
-        header('Location: register.php?errors=' . urlencode(implode('<br>', $errors)));
-        exit;
-    }
+// Generate 2FA secret
+$authenticator = new GoogleAuthenticator();
+$secret = $authenticator->generateSecret();
+$qrCodeUrl = GoogleQrUrl::generate(
+    $email,                  // user’s email or username
+    $secret,                 // generated secret
+    'PHP Lab App'            // your app or group name
+);
 
-    // Proceed to hash password and store (see below)
-}
+// Store user and secret (example logic)
+
+// Get POST data
+$name = $_POST['name'] ?? '';
+$email = $_POST['email'] ?? '';
+$password = $_POST['password'] ?? '';
+
+require_once __DIR__ . '/src/User.php';
+$user = new User($name, $email, $password, $secret);
+$userId = $user->register();
+
+// Redirect to a page to display QR code
+header('Location: success.php?secret=' . urlencode($secret) . '&qr=' . urlencode($qrCodeUrl));
+exit;
